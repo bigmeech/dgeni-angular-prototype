@@ -1,0 +1,20 @@
+<section class="ng-service">
+    <header>
+        <small>service</small>
+        <a href="#{{svc.id}}" id="{{svc.id}}">
+            <strong>{{ svc['ng-service'] }}</strong>
+        </a>
+    </header>
+    <section class="methods">
+        <header>Methods</header>
+        {%- if svc.methods.length %}
+            <ul>
+                {%- for method in svc.methods %}
+                    <li>{% include "method.partial.html" %}</li>
+                {%- endfor %}
+            </ul>
+        {%- else %}
+            None
+        {%- endif %}
+    </section>
+</section>

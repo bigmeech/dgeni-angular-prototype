@@ -1,0 +1,19 @@
+<section class="ng-module">
+    <header>
+        <small>module</small>
+        <a href="#{{module.id}}" id="{{module.id}}">
+            <strong>{{ module.name }}</strong>
+        </a>
+    </header>
+    <blockquote>{{ module.description}}</blockquote>
+    {% if (module.services.length > 0) %}
+        <section class="ng-services">
+            <header>Services</header>
+            <ul>
+                {%- for svc in module.services %}
+                    <li>{% include "ng-service.partial.html" %}</li>
+                {%- endfor %}
+            </ul>
+        </section>
+    {% endif %}
+</section>

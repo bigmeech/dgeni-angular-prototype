@@ -1,0 +1,39 @@
+<section class="method">
+    <a href="#{{method.id}}" id="{{method.id}}">
+        <small class="type">{{method.returns.type.name}}</small>
+        <strong>{{method.method}}</strong>
+        <small class="params">({% for param in method.params%}{{'' if loop.index0 == 0 else ', '}}{{param.name}}{% endfor %})</small>
+    </a>
+    <blockquote>{{method.description}}</blockquote>
+    {%- if method.params.length %}
+        <div class="params">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Param</th>
+                        <th>Type</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%- for param in method.params %}
+                        <tr>
+                            <td>{{ param.name }}</td>
+                            <td class="type">{{ param.type.name }}</td>
+                            <td>{{ param.description }}</td>
+                        </tr>
+                    {%- endfor %}
+                </tbody>
+            </table>
+        </div>
+    {%- endif %}
+    <div class="returns">
+        <header>returns</header>
+        <table>
+            <tr>
+                <td class="type">{{ method.returns.type.name }}</td>
+                <td>{{ method.returns.description }}</td>
+            </tr>
+        </table>
+    </div>
+</section>

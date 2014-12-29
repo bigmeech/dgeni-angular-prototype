@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block body%}
+    <ul>
+        {%- for module in doc.modules %}
+        <li>
+            {% include "ng-module.partial.html" %}
+        </li>
+        {%- endfor %}
+    </ul>
+{% endblock %}
+
