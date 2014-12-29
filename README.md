@@ -69,5 +69,5 @@ I needed to run after `paths-computed` otherwise it would bomb expecting some pr
 
 Next I needed to template out my structure. dgeni knows about docs/templates/index.template.html, which will receive my document. Then nunjucks templating handles bringing in a layout and partials for each view type. This doesn't need to be html and doesn't need to be nunjucks, but both are best for this simple proof of concept.
 
-<img src="screenshots/Screen Shot 2014-12-29 at 12.39.13 PM.png"
+<img src="screenshots/Screen Shot 2014-12-29 at 12.39.13 PM.png">
 
