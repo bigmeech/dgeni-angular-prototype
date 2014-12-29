@@ -6,6 +6,15 @@
         </a>
     </header>
     <blockquote>{{ module.description}}</blockquote>
+    {%- if (module.runBlocks.length) %}
+        {%- for runBlock in module.runBlocks %}
+            <aside class="ng-run">
+                <header>Run Block</header>
+                <p>{{ runBlock.description }}</p>
+            </aside>
+        {%- endfor %}
+    {%- endif %}
+
     {% if (module.services.length > 0) %}
         <section class="ng-services">
             <header>Services</header>

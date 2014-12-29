@@ -181,6 +181,14 @@ Note: I could try and get the params closer to the scope (implied), but 1) this 
 
 But wait... filters are special too...
 
-More of the same really, and the result is... 
+More of the same really, and the result is...
 
 <img src="screenshots/Screen Shot 2014-12-29 at 3.44.39 PM.png">
+
+Another important thing to document in my opinion is run blocks. They often do things without anyone knowing, and this is important to know when bringing in a module.
+
+More of the same...
+
+<img src="screenshots/Screen Shot 2014-12-29 at 4.13.30 PM.png">
+
+Though the prototype has some gnarly code (in true spirit of a prototype), this is not as hard as first impressions. 

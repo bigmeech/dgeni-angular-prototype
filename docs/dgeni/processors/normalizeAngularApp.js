@@ -22,6 +22,10 @@ module.exports = function normalizeAngularApp(){
                     item['ng-filter'] = item.fileInfo.ast.body[0].expression.arguments[0].value;
                     item['ng-module'] = item.fileInfo.ast.body[0].expression.callee.object.arguments[0].value;
                 }
+                if (canInferRun(item)){
+                    item['ng-run'] = true;
+                    item['ng-module'] = item.fileInfo.ast.body[0].expression.callee.object.arguments[0].value;
+                }
 
                 // build new document structure
 
@@ -31,13 +35,19 @@ module.exports = function normalizeAngularApp(){
                         services : [],
                         directives : [],
                         filters : [],
+                        runBlocks : [],
                         type : 'ng-module',
                         id : item['ng-module']
                     };
                 }
 
                 // TODO: need better way of handling this... probably item['ng-type']
-                if (item['ng-module'] && !item['ng-service'] && !item['ng-directive'] && !item['ng-filter']){
+                if (item['ng-module'] &&
+                    !item['ng-service'] &&
+                    !item['ng-directive'] &&
+                    !item['ng-filter'] &&
+                    !item['ng-run']
+                ){
                     memo.modules[item['ng-module']].description = item.description;
                     memo.parentDoc = item;
                 }
@@ -74,6 +84,15 @@ module.exports = function normalizeAngularApp(){
                     memo.modules[item['ng-module']].filters.push(item);
                     memo.parentDoc = item;
                 }
+                else if (item['ng-module'] && item['ng-run']){
+                    extend(item, {
+                        type : 'ng-run',
+                        id : item['ng-module'] + '.' + item['ng-run']
+                    });
+
+                    memo.modules[item['ng-module']].runBlocks.push(item);
+                    memo.parentDoc = item;
+                }
                 // if this is in the same file as the previous doc, assume it is part of the last doc
                 else if (memo.parentDoc && item.fileInfo.relativePath === memo.parentDoc.fileInfo.relativePath && item.method && memo.parentDoc.methods){
                     extend(item, {
@@ -105,6 +124,10 @@ module.exports = function normalizeAngularApp(){
 
 function canInferService(item){
     return canInferAngularModuleFunction('service', item);
+}
+
+function canInferRun(item){
+    return canInferAngularModuleFunction('run', item);
 }
 
 function canInferFilter(item){
