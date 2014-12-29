@@ -73,7 +73,7 @@ Next I needed to template out my structure. dgeni knows about docs/templates/ind
 
 ## Phase 2
 
-At this point I am not feeling great about. I have full control and can easily add my own tags, but I have gained considerable complexity. What would make this more worth while is if I can infer some tags... Turns out I can using the AST.
+At this point I am not feeling great about dgeni. I have full control and can easily add my own tags, but I have gained considerable complexity. What would make this more worth while is if I can infer some tags... Turns out I can using the AST.
 
 ```
 function canInferService(item){
@@ -130,5 +130,5 @@ creates a document with the following
     }
 ```
 
-This is more like it. 
+This is more like it.
 
