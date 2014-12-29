@@ -1,6 +1,4 @@
 /**
- * @ng-module calculator
- * @ng-service calculator
  * @description facade bringing together calculator functions
  */
 angular.module('calculator').service('calculator', function(addition, subtraction){

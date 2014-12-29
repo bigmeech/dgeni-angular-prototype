@@ -1,11 +1,10 @@
 /* global angular:false */
 
 /**
- * @ng-module addition
- * @ng-service addition
  * @description all things addition
  */
-angular.module('addition').service('addition', function(){
+angular.module('addition')
+.service('addition', function(){
     // TODO: what if I return a constructor, or a function
     return {
         /**

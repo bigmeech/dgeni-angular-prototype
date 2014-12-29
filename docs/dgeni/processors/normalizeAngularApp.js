@@ -38,6 +38,51 @@ module.exports = function normalizeAngularApp(){
 
                     memo.parentDoc.methods.push(item);
                 }
+                else if (canInferService(item)){
+                    var module = item.fileInfo.ast.body[0].expression.callee.object.arguments[0].value,
+                        service = item.fileInfo.ast.body[0].expression.arguments[0].value;
+                    item['ng-module'] = module;
+                    item['ng-service'] = service;
+
+                    // TODO: duplicating shit -- fix this when not a proof of concept
+                    if (!memo.modules[item['ng-module']]){
+                        memo.modules[item['ng-module']] = {
+                            services : [],
+                            type : 'ng-module',
+                            id : item['ng-module']
+                        };
+                    }
+
+                    extend(item, {
+                        methods : [],
+                        type : 'ng-service',
+                        id : item['ng-module'] + '.' + item['ng-service']
+                    });
+
+                    memo.modules[item['ng-module']].services.push(item);
+                    memo.parentDoc = item;
+                }
+                else if (canInferModule(item)) {
+                    var module = item.fileInfo.ast.body[0].expression.arguments[0].value;
+
+                    item['ng-module'] = module;
+
+                    // TODO: duplicating shit -- fix this when not a proof of concept
+                    if (!memo.modules[item['ng-module']]){
+                        memo.modules[item['ng-module']] = {
+                            services : [],
+                            type : 'ng-module',
+                            id : item['ng-module']
+                        };
+                    }
+
+                    if (!memo.modules[item['ng-module']].description && item.description){
+                        memo.modules[item['ng-module']].description = item.description;
+                    }
+
+
+                    memo.parentDoc = item;
+                }
                 else{
                     memo.parentDoc = null;
                     memo.nonAngularDocs.push(item);
@@ -54,6 +99,28 @@ module.exports = function normalizeAngularApp(){
         }
     };
 };
+
+function canInferService(item){
+
+    return item.fileInfo.ast.body[0].expression &&
+        item.fileInfo.ast.body[0].expression.callee &&
+        item.fileInfo.ast.body[0].expression.callee.property &&
+        item.fileInfo.ast.body[0].expression.callee.property.name === 'service' &&
+        item.fileInfo.ast.body[0].expression.callee.object &&
+        item.fileInfo.ast.body[0].expression.callee.object.callee &&
+        item.fileInfo.ast.body[0].expression.callee.object.callee.object.name === 'angular' &&
+        item.fileInfo.ast.body[0].expression.callee.object.callee.property &&
+        item.fileInfo.ast.body[0].expression.callee.object.callee.property.name === 'module';
+}
+function canInferModule(item){
+    return item.fileInfo.ast.body[0].expression &&
+        item.fileInfo.ast.body[0].expression.callee &&
+        item.fileInfo.ast.body[0].expression.callee.object &&
+        item.fileInfo.ast.body[0].expression.callee.object.name === 'angular' &&
+        item.fileInfo.ast.body[0].expression.callee.property &&
+        item.fileInfo.ast.body[0].expression.callee.property.name === 'module' &&
+        item.fileInfo.ast.body[0].expression.arguments.length === 2;
+}
 
 
 function extend(to, from){

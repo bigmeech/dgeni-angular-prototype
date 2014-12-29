@@ -1,6 +1,4 @@
 /**
- * @ng-module subtraction
- * @ng-service subtraction
  * @description subtraction functions
  */
 angular.module('subtraction').service('subtraction', function(){
