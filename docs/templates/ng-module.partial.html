@@ -21,7 +21,17 @@
         <header>Directives</header>
         <ul>
             {%- for directive in module.directives%}
-            <li>{% include "ng-directive.partial.html" %}</li>
+                <li>{% include "ng-directive.partial.html" %}</li>
+            {%- endfor %}
+        </ul>
+    </section>
+    {% endif %}
+    {% if (module.filters.length > 0) %}
+    <section class="ng-filters">
+        <header>Filters</header>
+        <ul>
+            {%- for filter in module.filters %}
+                <li>{% include "ng-filter.partial.html" %}</li>
             {%- endfor %}
         </ul>
     </section>

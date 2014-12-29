@@ -178,3 +178,9 @@ angular.module('calculator').directive('myCalculator', function(){
 Note: I could try and get the params closer to the scope (implied), but 1) this is just a proof of concept, and 2) we could when we want to, its easy enough to add
 
 <img src="screenshots/Screen Shot 2014-12-29 at 3.00.54 PM.png">
+
+But wait... filters are special too...
+
+More of the same really, and the result is... 
+
+<img src="screenshots/Screen Shot 2014-12-29 at 3.44.39 PM.png">

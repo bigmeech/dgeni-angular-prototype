@@ -9,13 +9,6 @@
     {%- set params = method.params%}
         {% include "params.partial.html" %}
     {%- endif %}
-    <div class="returns">
-        <header>returns</header>
-        <table>
-            <tr>
-                <td class="type">{{ method.returns.type.name }}</td>
-                <td>{{ method.returns.description }}</td>
-            </tr>
-        </table>
-    </div>
+    {%- set returns = method.returns %}
+    {% include "returns.partial.html" %}
 </section>

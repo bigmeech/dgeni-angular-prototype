@@ -1,0 +1,20 @@
+<section class="filter">
+    <header>
+        <small>filter</small>
+        <a href="#{{filter.id}}" id="{{filter.id}}">
+            <strong>{{ filter['ng-filter'] }}</strong>
+        </a>
+    </header>
+    <blockquote>{{ filter.description}}</blockquote>
+    <div class="usage">
+        <h2>usage</h2>
+        <pre>{{ filter.usage | marked }}</pre>
+    </div>
+    {%- if filter.params.length %}
+        {%- set params = filter.params%}
+        {% include "params.partial.html" %}
+    {%- endif %}
+    {%- set returns = filter.returns %}
+    {% include "returns.partial.html" %}
+
+</section>

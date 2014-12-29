@@ -18,6 +18,10 @@ module.exports = function normalizeAngularApp(){
                     item['ng-directive'] = item.fileInfo.ast.body[0].expression.arguments[0].value;
                     item['ng-module'] = item.fileInfo.ast.body[0].expression.callee.object.arguments[0].value;
                 }
+                if (canInferFilter(item)){
+                    item['ng-filter'] = item.fileInfo.ast.body[0].expression.arguments[0].value;
+                    item['ng-module'] = item.fileInfo.ast.body[0].expression.callee.object.arguments[0].value;
+                }
 
                 // build new document structure
 
@@ -26,13 +30,14 @@ module.exports = function normalizeAngularApp(){
                     memo.modules[item['ng-module']] = {
                         services : [],
                         directives : [],
+                        filters : [],
                         type : 'ng-module',
                         id : item['ng-module']
                     };
                 }
 
                 // TODO: need better way of handling this... probably item['ng-type']
-                if (item['ng-module'] && !item['ng-service'] && !item['ng-directive']){
+                if (item['ng-module'] && !item['ng-service'] && !item['ng-directive'] && !item['ng-filter']){
                     memo.modules[item['ng-module']].description = item.description;
                     memo.parentDoc = item;
                 }
@@ -50,13 +55,23 @@ module.exports = function normalizeAngularApp(){
                 }
                 // ng-directive - add to the module
                 else if (item['ng-module'] && item['ng-directive']){
-                    // TODO: tag ng-service should require ng-module
                     extend(item, {
                         type : 'ng-directive',
                         id : item['ng-module'] + '.' + item['ng-directive']
                     });
 
                     memo.modules[item['ng-module']].directives.push(item);
+                    memo.parentDoc = item;
+                }
+                // ng-directive - add to the module
+                else if (item['ng-module'] && item['ng-filter']){
+                    extend(item, {
+                        type : 'ng-filter',
+                        // TODO: uniquify filters and directives under some artificial namespace
+                        id : item['ng-module'] + '.' + item['ng-filter']
+                    });
+
+                    memo.modules[item['ng-module']].filters.push(item);
                     memo.parentDoc = item;
                 }
                 // if this is in the same file as the previous doc, assume it is part of the last doc
@@ -90,6 +105,10 @@ module.exports = function normalizeAngularApp(){
 
 function canInferService(item){
     return canInferAngularModuleFunction('service', item);
+}
+
+function canInferFilter(item){
+    return canInferAngularModuleFunction('filter', item);
 }
 
 function canInferDirective(item){

@@ -1,0 +1,11 @@
+{%- if returns %}
+    <div class="returns">
+        <header>returns</header>
+        <table>
+            <tr>
+                <td class="type">{{ returns.type.name }}</td>
+                <td>{{ returns.description }}</td>
+            </tr>
+        </table>
+    </div>
+{%- endif %}
