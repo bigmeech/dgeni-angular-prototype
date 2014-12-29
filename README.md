@@ -156,4 +156,25 @@ Most frustrating was getting `<add-symbol></add-symbol>` working... Looking at a
 
 <img src="screenshots/Screen Shot 2014-12-29 at 1.51.10 PM.png">
 
+But that isn't enough... directive attributes desperately need documentation. Especially to indicate whether they are parsed or interpolated.
 
+```js
+/**
+ * @description calculator control that takes an optional input and callbacks back with
+ *  the result when someone enters a second number and does a calculation
+ * @param {$parse(number)} intial-value optional initial value for the calculator. $parsed.
+ * @param {expression} on-calculated callback when a value has been calculated. Exposes `result` as the new calculated value
+ *
+ * @usage `<my-calculator
+ *      [initial-value="1"]
+ *      [on-calculated="log(result)"]>
+ *  </my-calculator>`
+ */
+angular.module('calculator').directive('myCalculator', function(){
+    // not important
+});
+```
+
+Note: I could try and get the params closer to the scope (implied), but 1) this is just a proof of concept, and 2) we could when we want to, its easy enough to add
+
+<img src="screenshots/Screen Shot 2014-12-29 at 3.00.54 PM.png">

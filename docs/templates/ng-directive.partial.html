@@ -10,5 +10,9 @@
         <h2>usage</h2>
         <pre>{{ directive.usage | marked }}</pre>
     </div>
+    {%- if directive.params.length %}
+        {%- set params = directive.params%}
+        {% include "params.partial.html" %}
+    {%- endif %}
 
 </section>
