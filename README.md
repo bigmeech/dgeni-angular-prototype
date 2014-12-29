@@ -132,3 +132,28 @@ creates a document with the following
 
 This is more like it.
 
+## More Angular Types
+
+This is all great, but I need to be able to support other angular types... for example directives and / or filters.
+
+Getting basic support for directives isn't too bad
+
+```
+/**
+* @description creates markup for the addition symbol
+* @usage `<add-symbol></add-symbol>`
+*/
+angular.module('addition').directive('addSymbol', function(){
+ return {
+     // not important
+ };
+});
+```
+
+Also updated `normalizeAngularApp` to infer and organize `ng-directive` and add templates.
+
+Most frustrating was getting `<add-symbol></add-symbol>` working... Looking at angular source I finally ended up using `| marked` which kind of works... In hind sight, I think my html tidy is what might have been stripping it out...
+
+<img src="screenshots/Screen Shot 2014-12-29 at 1.51.10 PM.png">
+
+

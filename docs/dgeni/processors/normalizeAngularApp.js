@@ -4,21 +4,40 @@ module.exports = function normalizeAngularApp(){
         $runBefore : ['rendering-docs'],
         $process: function (docs) {
             var normalized = docs.reduce(function (memo, item) {
+
+                // infer some stuff
+                // TODO: this should probably be a pre-processor
+                if (canInferModule(item)) {
+                    item['ng-module'] = item.fileInfo.ast.body[0].expression.arguments[0].value;
+                }
+                if (canInferService(item)){
+                    item['ng-service'] = item.fileInfo.ast.body[0].expression.arguments[0].value;
+                    item['ng-module'] = item.fileInfo.ast.body[0].expression.callee.object.arguments[0].value;
+                }
+                if (canInferDirective(item)){
+                    item['ng-directive'] = item.fileInfo.ast.body[0].expression.arguments[0].value;
+                    item['ng-module'] = item.fileInfo.ast.body[0].expression.callee.object.arguments[0].value;
+                }
+
+                // build new document structure
+
                 // if ng-module - create the module if it doesn't exist
                 if (item['ng-module'] && !memo.modules[item['ng-module']]){
                     memo.modules[item['ng-module']] = {
                         services : [],
+                        directives : [],
                         type : 'ng-module',
                         id : item['ng-module']
                     };
                 }
 
-                if (item['ng-module'] && !item['ng-service']){
+                // TODO: need better way of handling this... probably item['ng-type']
+                if (item['ng-module'] && !item['ng-service'] && !item['ng-directive']){
                     memo.modules[item['ng-module']].description = item.description;
                     memo.parentDoc = item;
                 }
                 // ng-service - add to the module
-                else if (item['ng-module'] && item['ng-service']){
+                else if (item['ng-module'] && item['ng-service'] && !item.method){
                     // TODO: tag ng-service should require ng-module
                     extend(item, {
                         methods : [],
@@ -27,6 +46,17 @@ module.exports = function normalizeAngularApp(){
                     });
 
                     memo.modules[item['ng-module']].services.push(item);
+                    memo.parentDoc = item;
+                }
+                // ng-directive - add to the module
+                else if (item['ng-module'] && item['ng-directive']){
+                    // TODO: tag ng-service should require ng-module
+                    extend(item, {
+                        type : 'ng-directive',
+                        id : item['ng-module'] + '.' + item['ng-directive']
+                    });
+
+                    memo.modules[item['ng-module']].directives.push(item);
                     memo.parentDoc = item;
                 }
                 // if this is in the same file as the previous doc, assume it is part of the last doc
@@ -38,80 +68,46 @@ module.exports = function normalizeAngularApp(){
 
                     memo.parentDoc.methods.push(item);
                 }
-                else if (canInferService(item)){
-                    var module = item.fileInfo.ast.body[0].expression.callee.object.arguments[0].value,
-                        service = item.fileInfo.ast.body[0].expression.arguments[0].value;
-                    item['ng-module'] = module;
-                    item['ng-service'] = service;
-
-                    // TODO: duplicating shit -- fix this when not a proof of concept
-                    if (!memo.modules[item['ng-module']]){
-                        memo.modules[item['ng-module']] = {
-                            services : [],
-                            type : 'ng-module',
-                            id : item['ng-module']
-                        };
-                    }
-
-                    extend(item, {
-                        methods : [],
-                        type : 'ng-service',
-                        id : item['ng-module'] + '.' + item['ng-service']
-                    });
-
-                    memo.modules[item['ng-module']].services.push(item);
-                    memo.parentDoc = item;
-                }
-                else if (canInferModule(item)) {
-                    var module = item.fileInfo.ast.body[0].expression.arguments[0].value;
-
-                    item['ng-module'] = module;
-
-                    // TODO: duplicating shit -- fix this when not a proof of concept
-                    if (!memo.modules[item['ng-module']]){
-                        memo.modules[item['ng-module']] = {
-                            services : [],
-                            type : 'ng-module',
-                            id : item['ng-module']
-                        };
-                    }
-
-                    if (!memo.modules[item['ng-module']].description && item.description){
-                        memo.modules[item['ng-module']].description = item.description;
-                    }
-
-
-                    memo.parentDoc = item;
-                }
                 else{
                     memo.parentDoc = null;
                     memo.nonAngularDocs.push(item);
                 }
+
+                item.json = JSON.stringify(item, null, 2);
 
                 return memo;
             }, {modules: {}, nonAngularDocs : [], parentDoc: null});
             return [{
                 docType : 'js',
                 modules : mapToArray(normalized.modules, 'name'),
+                nonAngularDocs : normalized.nonAngularDocs,
                 type : 'ng-modules',
                 outputPath: 'index.html'
-            }].concat(normalized.nonAngularDocs);
+            }];
         }
     };
 };
 
 function canInferService(item){
+    return canInferAngularModuleFunction('service', item);
+}
 
+function canInferDirective(item){
+    return canInferAngularModuleFunction('directive', item);
+}
+
+function canInferAngularModuleFunction(name, item){
     return item.fileInfo.ast.body[0].expression &&
         item.fileInfo.ast.body[0].expression.callee &&
         item.fileInfo.ast.body[0].expression.callee.property &&
-        item.fileInfo.ast.body[0].expression.callee.property.name === 'service' &&
+        item.fileInfo.ast.body[0].expression.callee.property.name === name &&
         item.fileInfo.ast.body[0].expression.callee.object &&
         item.fileInfo.ast.body[0].expression.callee.object.callee &&
         item.fileInfo.ast.body[0].expression.callee.object.callee.object.name === 'angular' &&
         item.fileInfo.ast.body[0].expression.callee.object.callee.property &&
         item.fileInfo.ast.body[0].expression.callee.object.callee.property.name === 'module';
 }
+
 function canInferModule(item){
     return item.fileInfo.ast.body[0].expression &&
         item.fileInfo.ast.body[0].expression.callee &&

@@ -1,0 +1,14 @@
+<section class="ng-directive">
+    <header>
+        <small>directive</small>
+        <a href="#{{directive.id}}" id="{{directive.id}}">
+            <strong>{{ directive['ng-directive'] }}</strong>
+        </a>
+    </header>
+    <blockquote>{{ directive.description}}</blockquote>
+    <div class="usage">
+        <h2>usage</h2>
+        <pre>{{ directive.usage | marked }}</pre>
+    </div>
+
+</section>

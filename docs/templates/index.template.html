@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 
 {% block body%}
+    {%- if doc.nonAngularDocs.length %}
+        <h1>Oh No... didn't match {{ doc.nonAngularDocs.length }} docs</h1>
+    {%- endif %}
     <ul>
         {%- for module in doc.modules %}
         <li>
