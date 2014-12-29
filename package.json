@@ -12,6 +12,7 @@
     "canonical-path": "0.0.2",
     "dgeni": "^0.4.1",
     "dgeni-packages": "^0.10.8",
+    "htmltidy": "0.0.6",
     "q": "^1.1.2"
   }
 }
