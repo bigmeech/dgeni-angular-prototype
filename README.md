@@ -71,3 +71,64 @@ Next I needed to template out my structure. dgeni knows about docs/templates/ind
 
 <img src="screenshots/Screen Shot 2014-12-29 at 12.39.13 PM.png">
 
+## Phase 2
+
+At this point I am not feeling great about. I have full control and can easily add my own tags, but I have gained considerable complexity. What would make this more worth while is if I can infer some tags... Turns out I can using the AST.
+
+```
+function canInferService(item){
+
+    return item.fileInfo.ast.body[0].expression &&
+        item.fileInfo.ast.body[0].expression.callee &&
+        item.fileInfo.ast.body[0].expression.callee.property &&
+        item.fileInfo.ast.body[0].expression.callee.property.name === 'service' &&
+        item.fileInfo.ast.body[0].expression.callee.object &&
+        item.fileInfo.ast.body[0].expression.callee.object.callee &&
+        item.fileInfo.ast.body[0].expression.callee.object.callee.object.name === 'angular' &&
+        item.fileInfo.ast.body[0].expression.callee.object.callee.property &&
+        item.fileInfo.ast.body[0].expression.callee.object.callee.property.name === 'module';
+}
+function canInferModule(item){
+    return item.fileInfo.ast.body[0].expression &&
+        item.fileInfo.ast.body[0].expression.callee &&
+        item.fileInfo.ast.body[0].expression.callee.object &&
+        item.fileInfo.ast.body[0].expression.callee.object.name === 'angular' &&
+        item.fileInfo.ast.body[0].expression.callee.property &&
+        item.fileInfo.ast.body[0].expression.callee.property.name === 'module' &&
+        item.fileInfo.ast.body[0].expression.arguments.length === 2;
+}
+```
+
+I can then populate the values
+
+```
+var module = item.fileInfo.ast.body[0].expression.callee.object.arguments[0].value,
+    service = item.fileInfo.ast.body[0].expression.arguments[0].value;
+item['ng-module'] = module;
+item['ng-service'] = service;
+```
+
+So now
+
+```
+/**
+ * @description all things addition
+ */
+angular.module('addition-module')
+.service('addition', function(){
+    //...
+});
+```
+
+creates a document with the following
+
+```
+    {
+        'ng-module' : 'addition-module',
+        'ng-service' : 'addition',
+        description : 'all things addition'
+    }
+```
+
+This is more like it. 
+
