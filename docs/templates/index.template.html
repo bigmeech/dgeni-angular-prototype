@@ -1,15 +1,4 @@
-{% extends "layout.html" %}
-
-{% block body%}
-    {%- if doc.nonAngularDocs.length %}
-        <h1>Oh No... didn't match {{ doc.nonAngularDocs.length }} docs</h1>
-    {%- endif %}
-    <ul>
-        {%- for module in doc.modules %}
-        <li>
-            {% include "ng-module.partial.html" %}
-        </li>
-        {%- endfor %}
-    </ul>
-{% endblock %}
+<p>see index.json </p>
+<p>see index.less.json </p>
+<p>see index.js </p>
 

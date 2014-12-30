@@ -22,7 +22,7 @@ module.exports = new Package('dtcc', [
 .processor(require(path.resolve(__dirname, './dgeni/processors/normalizeAngularApp.js')))
 
 // clean up the the html from nunjucks include (proper tabbing)
-.processor(require(path.resolve(__dirname, './dgeni/processors/htmlTidy.js')))
+//.processor(require(path.resolve(__dirname, './dgeni/processors/htmlTidy.js')))
 
 // Configure our dgeni-example package. We can ask the Dgeni dependency injector
 // to provide us with access to services and processors that we wish to configure

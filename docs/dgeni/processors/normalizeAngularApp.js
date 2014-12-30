@@ -111,13 +111,28 @@ module.exports = function normalizeAngularApp(){
 
                 return memo;
             }, {modules: {}, nonAngularDocs : [], parentDoc: null});
-            return [{
+            var docs = [{
                 docType : 'js',
                 modules : mapToArray(normalized.modules, 'name'),
                 nonAngularDocs : normalized.nonAngularDocs,
                 type : 'ng-modules',
                 outputPath: 'index.html'
             }];
+
+            // shouldn't be writing from here - but proving something out
+            require('fs').writeFileSync('docs/build/index.json', JSON.stringify(docs[0].modules, null, 2));
+            var lessJson = JSON.stringify(docs[0].modules, function(key, value){
+                if (['fileInfo','codeNode','tags', 'codeAncestors', 'tagDef'].indexOf(key) === -1){
+                    return value;
+                }
+                else{
+                    return null;
+                }
+            }, 2);
+            require('fs').writeFileSync('docs/build/index.less.json', lessJson);
+
+            require('fs').writeFileSync('docs/build/index.js', 'angular.module(\'docs-data\',[]).value(\'docs\', ' + lessJson + ');');
+            return docs;
         }
     };
 };
