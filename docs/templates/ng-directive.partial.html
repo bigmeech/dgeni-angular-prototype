@@ -14,5 +14,6 @@
         {%- set params = directive.params%}
         {% include "params.partial.html" %}
     {%- endif %}
-
+    {% set source = directive %}
+    {% include "source.partial.html" %}
 </section>
